@@ -22,9 +22,9 @@ on:
 
 # --- MESSAGE JOBS ---
 jobs:
-  # Example job — copy, rename, and edit for each message
 
   # --- JOB 1 ---
+  # This is an example job — copy, rename, and/or edit for each scheduled message you wish to send
   send_message_example:
     runs-on: ubuntu-latest
 
