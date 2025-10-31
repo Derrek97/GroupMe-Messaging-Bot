@@ -1,0 +1,60 @@
+name: GroupMe Message Scheduler
+
+# --- TRIGGERS ---
+# Use cron syntax (Minute Hour DayOfMonth Month DayOfWeek)
+# Example: '00 17 * * 2' = Every Tuesday at 1:00 PM Eastern (17:00 UTC)
+on:
+  schedule:
+    # Uncomment and edit the lines below to schedule your messages
+    # - cron: '00 17 * * 2'  # Example: Tuesday reminder
+    # - cron: '00 17 * * 3'  # Example: Wednesday reminder
+    # - cron: '30 22 * * 6'  # Example: Saturday night reminder
+
+  # Allows manual runs for testing
+  workflow_dispatch:
+    inputs:
+      message_day:
+        description: 'Which message to send (match one of your job names below)'
+        required: true
+        default: 'example'
+
+
+
+# --- MESSAGE JOBS ---
+jobs:
+  # Example job — copy, rename, and edit for each message
+
+  # --- JOB 1 ---
+  send_message_example:
+    runs-on: ubuntu-latest
+
+    # Edit the cron and manual trigger conditions
+    if: github.event.schedule == '00 17 * * 2' || 
+        (github.event_name == 'workflow_dispatch' && github.event.inputs.message_day == 'example')
+
+    # Add your GroupMe Bot ID secret under repo Settings > Secrets > Actions
+    env:
+      GROUPME_BOT_ID: ${{ secrets.GROUPME_BOT_ID }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Send scheduled GroupMe message
+        # Edit your message text here
+        run: python send_message.py "your_message_text_here"
+
+  # --- ADD MORE JOBS BELOW ---
+  # Just copy the "send_message_example" block above and adjust:
+  #  • Job name (e.g., send_message_tuesday)
+  #  • Cron condition in the `if:` line
+  #  • Message text inside the final `run:` step
+  #  • Manual trigger name in workflow_dispatch if desired
